@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Persistent cross-session memory for Devin CLI, powered by Honcho — lifecycle hooks capture your turns and recall context at session start",
   "keywords": ["honcho", "memory", "persistent-memory", "devin"],
+  "author": { "name": "mikeng-io", "email": "iam@mikeng.io" },
   "license": "MIT",
   "homepage": "https://honcho.dev",
   "platforms": ["local"],
