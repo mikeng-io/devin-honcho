@@ -252,7 +252,11 @@ async function verbPrompt(p) {
   const cwd = p.cwd || process.env.DEVIN_PROJECT_DIR || process.cwd();
   const name = sessionName(cfg, cwd, p.session_id);
   const key = p.session_id || name;
-  const promptText = (p.prompt || "").trim();
+  const promptText = (typeof p.prompt === "string"
+    ? p.prompt
+    : Array.isArray(p.prompt)
+      ? p.prompt.filter((b) => b?.type === "text").map((b) => b.text).join("\n")
+      : "").trim();
 
   // Local-first capture of the user's turn (no network on this path)
   if (cfg.saveMessages && promptText) {
