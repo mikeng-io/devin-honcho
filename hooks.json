@@ -1,0 +1,62 @@
+{
+  "SessionStart": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node /Users/mike/.honcho/devin/stage/hook.mjs recall",
+          "timeout": 20
+        }
+      ]
+    }
+  ],
+  "UserPromptSubmit": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node /Users/mike/.honcho/devin/stage/hook.mjs prompt",
+          "timeout": 10
+        }
+      ]
+    }
+  ],
+  "Stop": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node /Users/mike/.honcho/devin/stage/hook.mjs flush",
+          "timeout": 20
+        }
+      ]
+    }
+  ],
+  "PostCompaction": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node /Users/mike/.honcho/devin/stage/hook.mjs compact",
+          "timeout": 20
+        }
+      ]
+    }
+  ],
+  "SessionEnd": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node /Users/mike/.honcho/devin/stage/hook.mjs flush",
+          "timeout": 20
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "devin-honcho",
+  "version": "0.1.0",
+  "description": "Persistent memory for Devin CLI, powered by Honcho — native plugin with lifecycle hooks (no MCP)",
+  "type": "module",
+  "bin": {
+    "devin-honcho": "bin/devin-honcho.mjs"
+  },
+  "files": [
+    ".devin-plugin/",
+    "AGENTS.md",
+    "hooks.json",
+    "hooks/",
+    "skills/",
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["honcho", "devin", "devin-cli", "memory", "plugin"],
+  "license": "MIT"
+}

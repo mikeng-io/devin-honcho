@@ -1,0 +1,17 @@
+{
+  "name": "devin-honcho",
+  "version": "0.1.0",
+  "description": "Persistent cross-session memory for Devin CLI, powered by Honcho — lifecycle hooks capture your turns and recall context at session start",
+  "keywords": ["honcho", "memory", "persistent-memory", "devin"],
+  "license": "MIT",
+  "homepage": "https://honcho.dev",
+  "platforms": ["local"],
+  "setup": {
+    "notice": "Requires a Honcho API key (or self-hosted Honcho) and Node >= 18 on your PATH. Configuration is shared with the other Honcho integrations via ~/.honcho/config.json.",
+    "steps": [
+      "Run `honcho init` to save your API key, or reuse the existing ~/.honcho/config.json from another Honcho integration",
+      "Run `node bin/devin-honcho.mjs install` from this directory to seed hosts.devin and stage the hooks",
+      "Install the plugin with `devin plugins install --local <this directory>`, then start a new session"
+    ]
+  }
+}
