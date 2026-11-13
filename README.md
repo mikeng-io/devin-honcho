@@ -32,19 +32,23 @@ honcho init   # uv tool install honcho-cli if you don't have the CLI
 
 ### Step 2: Seed config and stage the hooks
 
+No git clone needed — bootstrap straight from GitHub:
+
 ```
-node bin/devin-honcho.mjs install     # or `npx devin-honcho install` once published
+npx github:mikeng-io/devin-honcho install
 ```
 
-This seeds `hosts.devin` in `~/.honcho/config.json`, stages the hook bundle at `~/.honcho/devin/stage/` (so hooks survive repo moves), and rewrites `hooks.json` with absolute staged paths — Devin does not guarantee plugin-hook working directories.
+(From a local checkout, `node bin/devin-honcho.mjs install` does the same.)
+
+This seeds `hosts.devin` in `~/.honcho/config.json` and stages the hook bundle at `~/.honcho/devin/stage/`. The committed `hooks.json` references the staged bundle through portable `~/` paths, so the same file works on every machine. Devin does **not** resolve `./` hook commands against the plugin root (verified: relative commands silently never run), which is why the staging step exists.
 
 ### Step 3: Install the plugin
 
 ```
-devin plugins install --local /path/to/devin-honcho
+devin plugins install mikeng-io/devin-honcho
 ```
 
-(From GitHub, once pushed: `devin plugins install <owner>/devin-honcho` — run `devin-honcho install` first so `hooks.json` exists with staged paths.)
+(From a local checkout: `devin plugins install --local /path/to/devin-honcho`.)
 
 ### Step 4: Start a new session
 
@@ -72,6 +76,19 @@ All settings live in `~/.honcho/config.json`. Devin-specific settings go under `
 | `endpoint.baseUrl` | Honcho cloud | Self-hosted URL, with or without `/v3` |
 
 Environment overrides: `HONCHO_API_KEY`, `HONCHO_PEER_NAME`, `HONCHO_CONFIG_DIR`. An explicit `sessions[cwd]` mapping pins a directory to a session name.
+
+### Official Honcho cloud vs. self-hosted
+
+Setup is **per machine**, in `~/.honcho/config.json` — never in this repo. Both backends work:
+
+- **Official Honcho cloud** (default): `honcho init` with a key from [app.honcho.dev](https://app.honcho.dev). No endpoint config needed; the plugin defaults to `https://api.honcho.dev`.
+- **Self-hosted Honcho**: set `endpoint.baseUrl` (root or `hosts.devin`) to your server, with or without `/v3`:
+
+  ```json
+  { "endpoint": { "baseUrl": "http://localhost:8000" } }
+  ```
+
+To merge memory with your other tools, also set the same `workspace` and `peerName` in each host block.
 
 ## How It Works
 
@@ -111,7 +128,7 @@ Inspect the local queue with `tail -f ~/.honcho/devin/queue/*.jsonl`; `devin-hon
 | - | - |
 | `~/.honcho/config.json` | Seeds `hosts.devin` (existing blocks untouched) |
 | `~/.honcho/devin/stage/hook.mjs` | Staged hook bundle the plugin hooks execute |
-| `hooks.json` (repo) | Rewritten with absolute staged paths |
+| `hooks.json` (repo) | Unchanged — already points at `~/.honcho/devin/stage/` |
 
 `devin plugins remove devin-honcho --local` reverses the plugin; local queues stay until you delete `~/.honcho/devin/`.
 
@@ -120,7 +137,7 @@ Inspect the local queue with `tail -f ~/.honcho/devin/queue/*.jsonl`; `devin-hon
 ```
 .devin-plugin/plugin.json   manifest (local platform only)
 AGENTS.md                   always-on memory directives (plugin rule)
-hooks.json                  lifecycle hook registrations (staged paths after install)
+hooks.json                  lifecycle hook registrations (portable ~/ staged paths)
 hooks/hook.mjs              recall · prompt · flush · compact · status (zero deps)
 bin/devin-honcho.mjs        CLI: install · status · remove · <hook verb>
 skills/honcho-memory/       memory usage guidance for the model

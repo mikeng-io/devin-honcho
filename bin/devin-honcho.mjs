@@ -51,22 +51,14 @@ if (verb === "install") {
     console.log(`Seeded hosts.devin in ${p} (workspace=${j.hosts.devin.workspace})`);
   }
 
-  // Stage the hook bundle so plugin hooks keep working if the repo moves
+  // Stage the hook bundle at ~/.honcho/devin/stage/ — hooks.json references it
+  // via portable `~/` paths, so the same committed file works on every machine.
+  // Devin does not resolve `./` plugin-hook commands against the plugin root
+  // (verified empirically: relative commands silently never execute).
   const stage = join(HONCHO_DIR, "devin", "stage");
   mkdirSync(stage, { recursive: true });
   copyFileSync(HOOK, join(stage, "hook.mjs"));
-
-  // Devin does not guarantee plugin-hook cwd; use absolute staged paths
-  const staged = join(stage, "hook.mjs");
-  const hooksJson = {
-    SessionStart: [{ matcher: "", hooks: [{ type: "command", command: `node ${staged} recall`, timeout: 20 }] }],
-    UserPromptSubmit: [{ matcher: "", hooks: [{ type: "command", command: `node ${staged} prompt`, timeout: 10 }] }],
-    Stop: [{ matcher: "", hooks: [{ type: "command", command: `node ${staged} flush`, timeout: 20 }] }],
-    PostCompaction: [{ matcher: "", hooks: [{ type: "command", command: `node ${staged} compact`, timeout: 20 }] }],
-    SessionEnd: [{ matcher: "", hooks: [{ type: "command", command: `node ${staged} flush`, timeout: 20 }] }],
-  };
-  writeFileSync(join(ROOT, "hooks.json"), JSON.stringify(hooksJson, null, 2) + "\n");
-  console.log(`Staged hooks at ${staged}; hooks.json rewritten with absolute paths`);
+  console.log(`Staged hooks at ${join(stage, "hook.mjs")}`);
 
   console.log(`\nInstall the plugin:\n\n  devin plugins install --local ${ROOT}\n`);
   console.log("Then start a new Devin session. Verify with `devin plugins info devin-honcho` and `/hooks`.");
